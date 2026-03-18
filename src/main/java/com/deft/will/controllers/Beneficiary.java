@@ -6,6 +6,8 @@ import com.deft.will.services.PdfService;
 import com.deft.will.services.WillService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -28,30 +30,32 @@ public class Beneficiary {
     }
 
     @GetMapping("/get/beneficiary/{id}")
-    public Mono<WillFormResponse> getBeneficiary(@PathVariable String id) {
+    public Mono<ResponseEntity<WillFormResponse>> getBeneficiary(@PathVariable String id) {
 
-        return willService.getWill(id);
+        return willService.getWill(id).map(ResponseEntity::ok).defaultIfEmpty(ResponseEntity.notFound().build());
     }
         @GetMapping("/get_all/beneficiary")
-        public Flux<WillFormResponse> getAllBeneficiary () {
-            return willService.getAllWill();
+        public Flux<ResponseEntity<WillFormResponse>> getAllBeneficiary () {
+            return willService.getAllWill().map(ResponseEntity::ok).defaultIfEmpty(ResponseEntity.notFound().build());
         }
 
         @PostMapping("/add/beneficiary")
-        public Mono<WillFormResponse> addBeneficiary (@RequestBody WillFormRequest willFormRequest){
+        public Mono<ResponseEntity<WillFormResponse>> addBeneficiary (@RequestBody WillFormRequest willFormRequest){
             System.out.println("test");
-            return willService.createWill(willFormRequest);
+            return willService.createWill(willFormRequest)
+                    .map(response-> ResponseEntity.status(HttpStatus.CREATED).body(response));
 
         }
 
         @DeleteMapping("/delete/beneficiary/{id}")
-        public Mono<Void> delBeneficiary (@PathVariable String id){
-            return willService.delBeneficiary(id);
+        public Mono<ResponseEntity<Object>> delBeneficiary (@PathVariable String id){
+            return willService.delBeneficiary(id).then(Mono.just(ResponseEntity.noContent().build()));
         }
         @PutMapping("/update/beneficiary/{id}")
-        public Mono<WillFormResponse> updateBeneficiary (@PathVariable String id, @RequestBody WillFormRequest
+        public Mono<ResponseEntity<WillFormResponse>> updateBeneficiary (@PathVariable String id, @RequestBody WillFormRequest
         updateRequest){
-            return willService.updateBeneficiary(id, updateRequest);
+            return willService.updateBeneficiary(id, updateRequest).map(ResponseEntity::ok)
+                    .defaultIfEmpty(ResponseEntity.notFound().build());
         }
 
         @PostMapping("/generate/pdf")
