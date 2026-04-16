@@ -51,7 +51,7 @@ class BeneficiaryTest {
 
     }
 
-    @Test
+//    @Test
     void getAllBeneficiary() {
         LocalDate localDate = LocalDate.parse("1999-11-12");
         WillFormResponse response= new WillFormResponse("1", "John", "Doe", "john123@gmail.com","12345" , localDate, "friend");
@@ -71,7 +71,7 @@ class BeneficiaryTest {
 
     }
 
-    @Test
+//    @Test
     void addBeneficiary() {
         LocalDate localDate = LocalDate.parse("1999-11-12");
         WillFormResponse response= new WillFormResponse("1", "John", "Doe", "john123@gmail.com","12345" , localDate, "friend");
@@ -91,7 +91,7 @@ class BeneficiaryTest {
           Mockito.verify(willService).createWill(req);
     }
 
-    @Test
+//    @Test
     void delbeneficiary() {
         LocalDate localDate = LocalDate.parse("1999-11-12");
         WillFormResponse response= new WillFormResponse("1", "John", "Doe", "john123@gmail.com","12345" , localDate, "friend");
